@@ -1,0 +1,26 @@
+============================================
+              INVOICE DETAILS              
+============================================
+Item 1:
+  Shoe ID      : N002
+  Shoe Name    : React
+  Shoe Brand   : Nike
+  Shoe Color   : Red
+  Shoe Price   : Rp.100000
+  Shoe Quantity: 9
+
+Item 2:
+  Shoe ID      : B003
+  Shoe Name    : Poping
+  Shoe Brand   : Briken Stock
+  Shoe Color   : Blue
+  Shoe Price   : Rp.200000
+  Shoe Quantity: 5
+
+============================================
+         PAYMENT DETAILS         
+============================================
+Total Price : Rp.1900000
+Paid        : Rp.20000000
+Change      : Rp.18100000
+============================================
