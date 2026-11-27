@@ -41,12 +41,14 @@ public class CartController {
 				}else if(quantity>selectedCB.getTicketStock()){
 					displayAlert(AlertType.ERROR, "The order must not more than the stock");
 				}else {
+					boolean inCart = false;
 					for (Cart cart : LandingView.carts) {
 						if(cart.getShoeID().equals(selectedCB.getShoeID())) {
 							CartRepository.updateDataCart(cart.getQuantity(),Integer.valueOf(quantityTF),selectedCB.getShoeID());
+							inCart = true;
 						}
 					}
-					CartRepository.insertCart(selectedCB, quantityTF);
+					if (!inCart) CartRepository.insertCart(selectedCB, quantityTF);
 					displayAlert(AlertType.INFORMATION, "The order has beed added to cart");
 //					ShoeRepository.updateStock(selectedCB.getTicketStock()-Integer.valueOf(quantityTF), selectedCB.getShoeID());
 				}											

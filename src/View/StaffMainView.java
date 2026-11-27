@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import Util.Rupiah;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Border;
@@ -72,7 +73,8 @@ public class StaffMainView extends Page{
 		updateBtn = new Button("Update");
 		submitBtn = new Button();
 		FormContainer = new GridPane();
-		colorTF = new TextField("Shoe Color");
+		colorTF = new TextField();
+		colorTF.setPromptText("Shoe Color");
 		
 		if(LandingView.user.getUserAction().equals("Manage Brand")) {
 			initBrand();
@@ -107,7 +109,16 @@ public class StaffMainView extends Page{
 		FormContainer.setVisible(false);
 		submitBtn.setVisible(false);
 		FormContainer.setPadding(new Insets(10));
-		FormContainer.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		Util.Theme.style(FormContainer, "panel");
+		FormContainer.setHgap(10);
+		FormContainer.setVgap(10);
+		Util.Theme.style(tableLb, "section-title");
+		Util.Theme.style(insertBtn, "segment", "first");
+		Util.Theme.style(updateBtn, "segment", "last");
+		Util.Theme.style(submitBtn, "primary");
+		GridContainer.setVgap(12);
+		ActionBorder.setPadding(new javafx.geometry.Insets(4, 0, 0, 0));
+		BorderPane.setMargin(FormContainer, new javafx.geometry.Insets(12, 0, 12, 0));
 		
 		if(LandingView.user.getUserAction().equals("Manage Brand")) {
 			arrangeBrand();
@@ -223,7 +234,7 @@ public class StaffMainView extends Page{
 	}
 	
 	private void arrangeBrand() {
-		allBrandTable.setPrefWidth(1000);
+		allBrandTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		allBrandTable.setMaxHeight(300);
 		
 		brandIDCol.setPrefWidth(100);
@@ -271,7 +282,9 @@ public class StaffMainView extends Page{
 	}
 	
 	private void arrangeShoe() {
-		allShoeTable.setMinWidth(1000);
+		allShoeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		Rupiah.apply(priceCLCol);
+		Util.Theme.number(stockCLCol);
 		allShoeTable.setMaxHeight(250);
 		
 		ShoeIDCol.setPrefWidth(100);

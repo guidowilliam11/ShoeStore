@@ -12,7 +12,7 @@ public class ManageBrand extends Brand{
 	private Button deleteBTN;
 	public ManageBrand(int BrandID, String BrandName) {
 		super(BrandID, BrandName);
-		this.deleteBTN = new Button("Delete");
+		this.deleteBTN = Util.Theme.style(new Button("Delete"), "danger");
 		this.deleteBTN.setOnMouseClicked(deleteData());
 	}
 	

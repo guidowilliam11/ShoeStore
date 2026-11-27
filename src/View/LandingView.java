@@ -101,7 +101,7 @@ public class LandingView extends Page{
 		BrandNameCB.setPromptText("Brand Name");
 		ShoeNameCB.setPromptText("Shoe Name");
 		
-		main = new Scene(borderContainer, 1000, 600);
+		main = Util.Theme.apply(new Scene(borderContainer, 1180, 720));
 	}
 
 	@Override

@@ -11,6 +11,7 @@ public class Main extends Application{
 
 	@Override
 	public void start(Stage arg0) throws Exception {
+		Util.Theme.install();
 		ViewController.stage = arg0;
 		new LoginView();
 	}

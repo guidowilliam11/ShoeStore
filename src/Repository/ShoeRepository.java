@@ -57,7 +57,7 @@ public class ShoeRepository {
 				Integer ticketStock = connect.rs.getInt("TicketStock");
 				String ShoeColor = connect.rs.getString("ShoeColor");
 				
-				manageShoes.add(new ManageShoe(ShoeID, ShoeName, BrandName, ticketPrice, ticketStock, new Button("Delete"), ShoeColor));
+				manageShoes.add(new ManageShoe(ShoeID, ShoeName, BrandName, ticketPrice, ticketStock, Util.Theme.style(new Button("Delete"), "danger"), ShoeColor));
 			}
 			
 		} catch (Exception e) {

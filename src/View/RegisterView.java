@@ -58,9 +58,9 @@ public class RegisterView extends Page{
 		femaleRB = new RadioButton("Female");
 		
 		registerBTN = new Button("Register");
-		gotoLoginBTN = new Button("Already have an account ?\n               Login here !");
+		gotoLoginBTN = new Button("Already have an account? Sign in");
 		
-		register = new Scene(borderContainer, 1000, 600);
+		register = Util.Theme.apply(new Scene(borderContainer, 1000, 600));
 	}
 
 	@Override
@@ -104,10 +104,10 @@ public class RegisterView extends Page{
 		
 		usernameTF.setPrefWidth(250);
 		passwordPF.setPrefWidth(250);
-		Font font = Font.font("Open Sans", 25);
-		registerLB.setFont(font);
+		Util.Theme.style(registerLB, "title");
+		Util.Theme.style(registerBTN, "primary");
 		
-		gotoLoginBTN.setStyle("-fx-background-color: transparent;");
+		Util.Theme.style(gotoLoginBTN, "link");
 	}
 
 	private void setGridPaneAlignment() {

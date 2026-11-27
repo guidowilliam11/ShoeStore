@@ -1,0 +1,58 @@
+/* ShoeStore theme on top of AtlantaFX Primer Light (set in Main). AtlantaFX draws the controls;
+   this file sets the brand accent and the few components AtlantaFX doesn't have: product cards,
+   the order panel and the low-stock badge. */
+
+.root {
+    /* One accent: teal, for the primary action, selection and focus. */
+    -color-accent-fg: #0f766e;
+    -color-accent-emphasis: #0f766e;
+    -color-accent-muted: rgba(15, 118, 110, 0.4);
+    -color-accent-subtle: #e3f1ef;
+    -color-bg-default: #ffffff;
+    -color-bg-subtle: #f6f5f2;
+    -fx-font-size: 13px;
+}
+
+/* The page is a warm off-white; cards and panels sit on it as white surfaces. */
+.page { -fx-background-color: -color-bg-subtle; }
+.title { -fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: -color-fg-default; }
+.section-title { -fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: -color-fg-default; }
+.muted { -fx-text-fill: -color-fg-muted; }
+.total { -fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: -color-fg-default; }
+.change { -fx-font-weight: bold; -fx-text-fill: -color-success-fg; }
+.change.short { -fx-text-fill: -color-danger-fg; }
+
+/* Internal window: fills the page, no chrome. */
+.window { -fx-background-color: -color-bg-subtle; -fx-border-color: transparent; -fx-border-width: 0; -fx-background-radius: 0; -fx-font-size: 13px; }
+.window-titlebar { -fx-pref-height: 0; -fx-min-height: 0; -fx-max-height: 0; -fx-opacity: 0; }
+
+.panel {
+    -fx-background-color: -color-bg-default;
+    -fx-border-color: -color-border-default;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 16;
+}
+
+/* Product card: photo, name, brand and colour, price, stock. Selected card gets the accent ring. */
+.product-card {
+    -fx-background-color: -color-bg-default;
+    -fx-border-color: -color-border-default;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 8 8 12 8;
+    -fx-cursor: hand;
+}
+.product-card:hover { -fx-border-color: -color-fg-subtle; }
+.product-card.selected { -fx-border-color: -color-accent-emphasis; -fx-border-width: 2; -fx-padding: 7 7 11 7; }
+.product-card .name { -fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: -color-fg-default; }
+.product-card .price { -fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: -color-fg-default; }
+.photo { -fx-background-color: -color-bg-subtle; -fx-background-radius: 8; }
+
+.badge { -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 2 8; -fx-background-radius: 10; }
+.badge.low { -fx-background-color: -color-warning-subtle; -fx-text-fill: -color-warning-fg; }
+.badge.out { -fx-background-color: -color-danger-subtle; -fx-text-fill: -color-danger-fg; }
+.badge.ok { -fx-background-color: -color-neutral-subtle; -fx-text-fill: -color-fg-muted; }
+
+.table-cell.number, .table-view .column-header.number .label { -fx-alignment: center-right; }
+.credit { -fx-font-size: 10px; -fx-text-fill: -color-fg-subtle; }

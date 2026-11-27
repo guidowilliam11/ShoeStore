@@ -38,16 +38,16 @@ public class LoginView extends Page{
 		borderContainer = new BorderPane();
 		gridContainer = new GridPane();
 		
-		loginLB = new Label("Login");
-		usernameLB = new Label("Username :");
-		passwordLB = new Label("Password :");
-		gotoRegisterBTN = new Button("Register here !");
+		loginLB = new Label("Sign in to ShoeStore");
+		usernameLB = new Label("Username");
+		passwordLB = new Label("Password");
+		gotoRegisterBTN = new Button("No account yet? Register");
 		usernameTF = new TextField();
 		passwordPF = new PasswordField();
 		
 		loginBTN = new Button("Login");
 		
-		login = new Scene(borderContainer, 1000, 600);
+		login = Util.Theme.apply(new Scene(borderContainer, 1000, 600));
 	}
 
 	@Override
@@ -76,10 +76,10 @@ public class LoginView extends Page{
 		
 		usernameTF.setPrefWidth(250);
 		passwordPF.setPrefWidth(250);
-		Font font = Font.font("Open Sans", 25);
-		loginLB.setFont(font);
-		loginLB.setPadding(new Insets(20));
-		gotoRegisterBTN.setStyle("-fx-background-color: transparent;");
+		Util.Theme.style(loginLB, "title");
+		Util.Theme.style(loginBTN, "primary");
+		Util.Theme.style(gotoRegisterBTN, "link");
+		loginBTN.setPrefWidth(250);
 	}
 
 	private void setGridPaneAlignment() {

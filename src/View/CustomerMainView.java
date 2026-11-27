@@ -26,6 +26,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.geometry.Pos;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import org.kordamp.ikonli.feather.Feather;
 
 public class CustomerMainView extends Page{
 	
@@ -38,6 +47,8 @@ public class CustomerMainView extends Page{
 	TextField quantityTF, moneyTF, nameTF, brandTF, colorTF, priceTF;
 	
 	int paymentAmount = 0;
+	FlowPane shopGrid;
+	Label selectedLB, selectedMeta, changeLB;
 	//Table
 	///Buy Shoe
 	static TableView<Shoe> ShoeTable;
@@ -80,8 +91,9 @@ public class CustomerMainView extends Page{
 		printBTN = new Button("Print");
 		Invoice.payment = -1;
 		totalLB = new Label();
-		totalLB.setText("Rp.0");
-		moneyTF = new TextField("0");
+		totalLB.setText(Util.Rupiah.format(0));
+		moneyTF = new TextField();
+		moneyTF.setPromptText("Amount paid");
 		if(LandingView.user.getUserAction().equals("Buy Shoe")) {
 			initBuy();
 		}
@@ -127,7 +139,14 @@ public class CustomerMainView extends Page{
 			
 			@Override
 			public void handle(ActionEvent arg0) {
-				int moneyValue = Integer.parseInt(moneyTF.getText());
+				String paidText = moneyTF.getText().replaceAll("[^0-9]", "");
+				if (paidText.isEmpty() || LandingView.carts.isEmpty()) {
+					Alert error = new Alert(AlertType.ERROR);
+					error.setContentText(LandingView.carts.isEmpty() ? "Your cart is empty" : "Enter the amount paid");
+					error.show();
+					return;
+				}
+				int moneyValue = Integer.parseInt(paidText);
 			    
 			    if (moneyValue >= paymentAmount) {
 			    	TransactionController.doInsert(moneyValue);
@@ -135,7 +154,8 @@ public class CustomerMainView extends Page{
 			    	CartController.emptyCart();
 			    	CartController.refreshCart(cartTable);
 			    	ShoeController.refreshShoe(ShoeTable);
-			    	totalLB.setText("Rp.0");
+			    	renderShop();
+			    	totalLB.setText(Util.Rupiah.format(0));
 			    	moneyTF.clear();
 			    	updateTotal();			
 			    }else {
@@ -204,7 +224,8 @@ public class CustomerMainView extends Page{
 		for (Cart c : LandingView.carts) {
 			paymentAmount+=c.getPrice();
 		}
-		totalLB.setText("Rp."+paymentAmount);
+		totalLB.setText(Util.Rupiah.format(paymentAmount));
+		if (changeLB != null) updateChange();
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -245,19 +266,23 @@ public class CustomerMainView extends Page{
 		LandingView.carts = new Vector();
 		///right
 		toCartLB = new Label("Add To Cart");
-		totalLB.setText("Rp.0");
+		totalLB.setText(Util.Rupiah.format(0));
 		updateTotal();
 		ShoeNameLB = new Label("Shoe Name");
 		quantityLB = new Label("Quantity");
 		quantityTF = new TextField();
 		toCartBTN = new Button("Add to Cart");
-		nameTF = new TextField("Shoe Name");
+		nameTF = new TextField();
+		nameTF.setPromptText("Shoe");
 		nameTF.setDisable(true);
-		brandTF = new TextField("Shoe Brand");
+		brandTF = new TextField();
+		brandTF.setPromptText("Brand");
 		brandTF.setDisable(true);
-		colorTF = new TextField("Shoe Color");
+		colorTF = new TextField();
+		colorTF.setPromptText("Color");
 		colorTF.setDisable(true);
-		priceTF = new TextField("Shoe Price");
+		priceTF = new TextField();
+		priceTF.setPromptText("Price");
 		priceTF.setDisable(true);
 		
 	}
@@ -267,48 +292,93 @@ public class CustomerMainView extends Page{
 	ShoeController.refreshShoe(ShoeTable);
 	CartController.refreshCart(cartTable);
 	updateTotal();
-	//buyTicket
-	///left
-	ShoeTable.getColumns().addAll(nameACCol,colorACCol,BrandACCol,priceACCol,stockACCol);
 	cartTable.getColumns().addAll(nameCCol, quantityCCol, priceCCol);
-	
-	GridContainer1.add(titleLB1, 0, 0);
-	GridContainer1.add(ShoeTable, 0, 1);
-	
-	GridContainer1.add(titleLB2, 0, 2);
-	GridContainer1.add(cartTable, 0, 3);
-	
-	GridContainer3.add(checkoutBTN, 0, 0);
-	GridContainer3.add(moneyTF, 1, 0);
-	GridContainer3.add(totalLB, 2, 0);
-	GridContainer1.add(GridContainer3, 0, 4);
-	///right
-	GridContainer2.add(toCartLB, 0, 0);
-	GridContainer2.add(ShoeNameLB, 0, 1);
-	GridContainer2.add(LandingView.ShoeNameCB, 0, 2);
-	GridContainer2.add(nameTF, 0, 3);
-	GridContainer2.add(brandTF, 0, 4);
-	GridContainer2.add(colorTF, 0, 5);
-	GridContainer2.add(priceTF, 0, 6);
-	GridContainer2.add(quantityLB, 0, 7);
-	GridContainer2.add(quantityTF, 0, 8);
-	GridContainer2.add(toCartBTN, 0, 9);
-	
-	
-	LandingView.mainContainer.setLeft(GridContainer1);
-	LandingView.mainContainer.setRight(GridContainer2);
-	
-	ShoeTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-        if (newSelection != null) {
-        	nameTF.setText(newSelection.getShoeName());
-        	brandTF.setText(newSelection.getBrandName());
-        	colorTF.setText(newSelection.getShoeColor());
-            priceTF.setText(String.valueOf(newSelection.getTicketPrice()));
-            LandingView.ShoeNameCB.setValue(getSelectedShoe(newSelection.getShoeID()));
-        }
-    });
+
+	// Left: the shop as a grid of product cards. Picking a card selects that shoe for the order.
+	shopGrid = new FlowPane(14, 14);
+	shopGrid.setPadding(new Insets(4, 4, 16, 4));
+	renderShop();
+	ScrollPane shopScroll = new ScrollPane(shopGrid);
+	shopScroll.setFitToWidth(true);
+	shopScroll.getStyleClass().add("edge-to-edge");
+	shopScroll.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+	Label shopTitle = new Label("Shop");
+	shopTitle.getStyleClass().add("title");
+	Label shopNote = new Label(LandingView.Shoes.size() + " models in stock");
+	shopNote.getStyleClass().add("muted");
+	VBox left = new VBox(4, shopTitle, shopNote, new Region(), shopScroll);
+	((Region) left.getChildren().get(2)).setMinHeight(8);
+	VBox.setVgrow(shopScroll, Priority.ALWAYS);
+	HBox.setHgrow(left, Priority.ALWAYS);
+
+	// Right: the order. The chosen shoe, a quantity, then the cart and payment with live change.
+	selectedLB = new Label("Pick a shoe on the left");
+	selectedLB.getStyleClass().add("section-title");
+	selectedMeta = new Label(" ");
+	selectedMeta.getStyleClass().add("muted");
+	quantityTF.setPromptText("Qty");
+	quantityTF.setPrefColumnCount(4);
+	HBox addRow = new HBox(8, quantityTF, toCartBTN);
+	HBox.setHgrow(toCartBTN, Priority.ALWAYS);
+	toCartBTN.setMaxWidth(Double.MAX_VALUE);
+
+	Label cartTitle = new Label("Cart");
+	cartTitle.getStyleClass().add("section-title");
+	cartTable.setPrefHeight(150);
+
+	Label totalCaption = new Label("Total");
+	totalCaption.getStyleClass().add("muted");
+	Region g1 = new Region(); HBox.setHgrow(g1, Priority.ALWAYS);
+	HBox totalRow = new HBox(totalCaption, g1, totalLB);
+	totalRow.setAlignment(Pos.BASELINE_LEFT);
+	changeLB = new Label(" ");
+	changeLB.getStyleClass().add("change");
+	moneyTF.textProperty().addListener((o, was, now) -> updateChange());
+	HBox payRow = new HBox(8, moneyTF, checkoutBTN);
+	HBox.setHgrow(moneyTF, Priority.ALWAYS);
+
+	VBox order = new VBox(10, selectedLB, selectedMeta, addRow, new Separator(), cartTitle, cartTable, totalRow, payRow, changeLB);
+	order.getStyleClass().add("panel");
+	order.setPrefWidth(372);
+	order.setMinWidth(372);
+
+	HBox page = new HBox(20, left, order);
+	page.setFillHeight(true);
+	order.setMaxHeight(Region.USE_PREF_SIZE);
+	page.setPadding(new Insets(20, 24, 20, 24));
+	page.getStyleClass().add("page");
+	LandingView.mainContainer.setPadding(Insets.EMPTY);
+	LandingView.mainContainer.setCenter(page);
 	}
-	
+
+	private void renderShop() {
+		shopGrid.getChildren().clear();
+		for (Shoe shoe : LandingView.Shoes) {
+			ProductCard card = new ProductCard(shoe);
+			card.setOnMouseClicked(e -> select(card));
+			shopGrid.getChildren().add(card);
+		}
+	}
+
+	private void select(ProductCard card) {
+		shopGrid.getChildren().forEach(n -> ((ProductCard) n).setSelected(n == card));
+		Shoe shoe = card.getShoe();
+		LandingView.ShoeNameCB.setValue(getSelectedShoe(shoe.getShoeID()));
+		selectedLB.setText(shoe.getShoeName());
+		selectedMeta.setText(shoe.getBrandName() + " · " + shoe.getShoeColor() + " · " + Util.Rupiah.format(shoe.getTicketPrice()));
+		quantityTF.requestFocus();
+	}
+
+	// Change due, or how much is still missing, as the amount paid is typed.
+	private void updateChange() {
+		String text = moneyTF.getText().replaceAll("[^0-9]", "");
+		changeLB.getStyleClass().remove("short");
+		if (text.isEmpty() || paymentAmount == 0) { changeLB.setText(" "); return; }
+		long paid = Long.parseLong(text);
+		if (paid >= paymentAmount) changeLB.setText("Change " + Util.Rupiah.format(paid - paymentAmount));
+		else { changeLB.setText(Util.Rupiah.format(paymentAmount - paid) + " short"); changeLB.getStyleClass().add("short"); }
+	}
+
 	private Shoe getSelectedShoe(String shoeID) {
 	    for (Shoe shoe : LandingView.Shoes) {          
 	        if (shoe.getShoeID().equals(shoeID)) {
@@ -319,30 +389,25 @@ public class CustomerMainView extends Page{
 	}
 
 	private void arrangeBuy() {
-		GridContainer3.setPadding(new Insets(20));
-		GridContainer1.setPadding(new Insets(20));
-		GridContainer1.setVgap(5);
-		GridContainer2.setPadding(new Insets(20));
-		GridContainer2.setVgap(10);
-		GridContainer1.setPrefWidth(700);
-		
-		ShoeTable.setPrefWidth(700);
-		cartTable.setPrefWidth(700);
-		
-		LandingView.ShoeNameCB.setMinWidth(220);
-		quantityTF.setMinWidth(220);
-		
-		nameACCol.setMinWidth(150);
-		colorACCol.setMinWidth(150);
-		BrandACCol.setMinWidth(150);
-		priceACCol.setMinWidth(110);
-		stockACCol.setMinWidth(100);
-		
-		nameCCol.setMinWidth(200);
-		quantityCCol.setMinWidth(100);
-		priceCCol.setMinWidth(100);
-
+		Util.Rupiah.apply(priceCCol);
+		Util.Theme.number(quantityCCol);
+		cartTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		cartTable.setPlaceholder(new Label("Your cart is empty"));
+		Util.Theme.style(toCartBTN, "primary");
+		Util.Theme.style(checkoutBTN, "primary");
+		Util.Theme.icon(toCartBTN, Feather.SHOPPING_CART);
+		Util.Theme.icon(checkoutBTN, Feather.CHECK);
+		Util.Theme.style(totalLB, "total");
+		moneyTF.setPromptText("Amount paid");
+		nameCCol.setMinWidth(130);
+		quantityCCol.setMinWidth(48);
+		quantityCCol.setMaxWidth(56);
+		priceCCol.setMinWidth(116);
+		quantityCCol.setText("Qty");
+		priceCCol.setText("Total");
+		checkoutBTN.setMinWidth(Region.USE_PREF_SIZE);
 	}
+
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void initTransaction() {
